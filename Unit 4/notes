@@ -1,1 +1,172 @@
+Functions is a special case of a procedure -see proc in help-.
+
+The syntax for the definitiion and simple usage is shown in the following. Note that a function can be
+multivariate in both input and output parameters.
+
+Before textbook essentially this is the syntax:
+
+f1 := (x,y,z) -> x^2+y^2+z^2
+
+If output wants a list
+
+f1 := (x,y,z) -> [x^2+y^2+z^2]
+
+If output wants a set
+
+f1 := (x,y,z) -> {x^2+y^2+z^2}
+
+f1:=x->x^2*sin(a*x);
+x -> x^2*sin(a*x)
+>> f1(z^2);
+4 2
+z sin(a z )
+>> f2:=(x,y)->sqrt(x^2+y^2); #Example of 2-parameter input#
+(x, y) -> sqrt(x^2 + y^2)
+>> f2(3,4);
+5
+>> f3:=x->[x,x^2,x^3]; #Example of 3-parameter output, as a list#
+x -> [x, x^2, x^3]
+>> f3(2*y);
+2 3
+[2 y, 4 y , 8 y ]
+>> f4:=y->{y,y^2,y^3}; #Example of output as a set#
+y -> {y, y^2, y^3}
+>> f4(0);
+{0}
+>> f4(z);
+2 3
+{z, z , z }
+>> f5:=(y,z)->[y-z,z,-y];
+#Example of 2-parameter input, 3-parameter list output#
+(y, z) -> [y - z, z, -y]
+f5(2,w);
+[2 - w, w, -2]
+
+Functions can be composed by means of the @ command, e.g.: if we define h=f@g, then h(y) is equivalent to
+f(g(y)). Can also define a function repeatedly with itself by means of the command @@n, where n is the integer for 
+repeated compositions, e.g.:
+
+To clean
+==========================
+f:=x->1+x^2; g:=x->1/x;
+x -> 1 + x^2
+x -> 1/x
+>> h:=f@g;
+(x -> 1 + x^2)@(x -> 1/x)
+>> h(y);
+1
+-- + 1
+2
+y
+>> f4:=f@@4;
+(x -> (;
+1 + x^2;
+))@(x -> (;
+1 + x^2;
+))@(x -> (;
+1 + x^2;
+))@(x -> (;
+1 + x^2;
+))
+>> f4(z);
+2 2 2 2
+(((z + 1) + 1) + 1) + 1
+>> normal(%);
+2 4 6 8 10 12 14 16
+80 z + 144 z + 168 z + 138 z + 80 z + 32 z + 8 z + z + 26
+
+===============================================================
+
+The notation f(x), g(y,z)
+
+Unknown dependance shit
+
+>> f(x):=x*sin(x);
+x sin(x)
+>> f(2*x);
+f(2 x)
+>> f(y);
+f(y)
+>> f(x);
+x sin(x)
+
+Differentiation:
+The system function diff finds the derivatives of an expression w.r.t. a specified variable. It can also be used to find
+higher order derivatives, including mixed PDs. The fn diff can operate on expressions that are known or unknown.
+
+The syntax is :
+  diff(f(x),x$n) means the nth derivative of f(x), w.r.t. x.
+e.g.:
+
+>> f:=(x,y)->x^2*y^3;
+(x, y) -> x^2*y^3
+>> g:=x^2+y^2;
+2 2
+x + y
+>> #COMMENT Some first derivatives#
+>> diff(f(x,z),z), diff(g,x), diff(h(x),x), diff(h(x),y);
+2 2
+3 x z , 2 x, diff(h(x), x), 0
+>> #COMMENT Some higher order derivatives#
+>> diff(f(w,z),w,z), diff(f(w,z),z$3), diff(g,x,x);
+2 2
+6 w z , 6 w , 2
+
+The operator diff does not assume that, in general, PDs commute; except when this is a consequence of the form of the
+expression being differentiated e.g.:
+diff(f(x)*g(y),x,y)-diff(f(x)*g(y),y,x)
+
+diff(h(x,y),x,y)-diff(h(x,y),y,x);
+diff(h(x, y), x, y) - diff(h(x, y), y, x)
+
+TODO how to partial derivatives
+
+If you want to find the derivative of an expression at a particular value.
+Step 1: Find the derivative
+Step 2: Use subs for the value
+
+subs(diff(f,x),x=1);
+
+Otherwise youll differentiate a constant value and get 0
+
+MuPAD has another differential operator, D. The difference between D and diff is that diff operates on expressions,
+
+while D operates on functions. id is the identity function id:=x->x;
+
+D(sin), D(exp), D(ln), D(sin*cos), D(sin@ln), D(f+g);
+1 2 cos@ln
+cos, exp, --, cos cos - sin , ------, D(f) + D(g)
+id id
+>> f := x -> (sin(ln(x))): D(f);
+cos@ln
+------
+id
+>> D(f)(1), D(f)(y^2), D(g)(0);
+2
+cos(ln(y ))
+cos(0), -----------, D(g)(0)
+2
+y
+
+If a function f has more than one argument then D([i],f) denotes the partial derivative with respect to the ith argument;
+and D([i,j..],f) is the natural generalization to higher derivates e.g.:
+
+f:=(x,y)->exp(a*x+b*y);
+(x, y) -> exp(a*x + b*y)
+>> D([1],f);
+(x, y) -> a*exp(a*x + b*y)
+66
+>> D([1,1],f);
+(x, y) -> a^2*exp(a*x + b*y)
+>> D([1,2],f);
+(x, y) -> a*b*exp(a*x + b*y)
+
+To simplify this clusterfuck to do a PD:
+  Step 1: Declare the function - f1 := (x,y) -> x^2*y^3
+  Step 2: Lets find the PD w.r.t x - D([1],f1) - should return 2x*y^3
+  Step 3: Lets find the PD w.r.t y - D([2],f1) - should return 3*y^2*x^2
+  Step 4: nth PD w.r.t x - D([1,n])
+Fuck im good.
+
+Another notation for D is ` , but will not be using.
 
