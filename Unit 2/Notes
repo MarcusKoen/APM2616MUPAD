@@ -23,10 +23,64 @@ delete(x)
 To save there are two steps:
 
 Step 1: Set your WRITEPATH variable
-  WRITEPATH: = "C:\\MuPAD";
+  WRITEPATH := "C:\\MuPAD";
 Note the double \\
+Another note is that this directory SHOULD ALREADY EXIST.
 
 Step 2: Use the protocol command
   protocol("ex.1");
 
+Lol. You can also just click File -> Save as...
 
+Protocol() is readable for users but NOT for MuPAD.
+
+To make it readable for MuPAD use the command:
+
+write("temp.out"); 
+
+This is readable by MuPAD, but not a text editor, to enable reading with a text editor use the command:
+
+write(Text,"temp.out");
+
+To read:
+Step 1: Set READPATH:
+  READPATH := "C:\\MuPAD";
+Note the double \\
+Another note is that this directory SHOULD ALREADY EXIST.
+
+Step 2: Use the read() command:
+  read("ex.2");
+
+To research commands: fclose, fopen, fread, fprint, ftextinput
+
+NB, a bit of a tangent, but how to access the Help Facility.
+  Help->Browse Manual->Search->Display
+
+Types.
+MuPAD type allocation is done implicityly and the type of a variable can change during the session.
+
+Until an identifier is set, it is a type identifier of type DOM_IDENT.
+
+You can test this with:
+domtype(a);
+where a is an unassigned indentifier.
+
+DOM_RAT
+DOM_FLOAT
+
+No storage limit or significant figures limit, to set e.g.: use the variable DIGITS which has a default of 10 signi fig
+  DIGITS:=100:float(PI);
+I = sqrt(-1)
+
+a: = 2 + 3*I: domtype(a);
+
+DOM_COMPLEX
+
+ac: = 2 - 3*I: b: = a*ac; domtype(b)
+13
+DOM_INT
+
+A string is anything closed in " "
+
+DOM_STRING
+DOM_BOOL
