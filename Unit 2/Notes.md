@@ -125,3 +125,5 @@ DOM_TABLE
 DOM_PROC
 DOM_POLY
 
+Excersises: TODO
+![image](https://github.com/user-attachments/assets/e69785cb-9ee9-46f0-bb85-c4bbbecd206e)
