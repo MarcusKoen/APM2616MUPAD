@@ -1,1 +1,32 @@
+Assignments
+
+a: = "My name":
+b2: = (x^2)*3/(Hy^3);
+A2b: = A*2*b;
+
+Note that it has to start with a letter. It uses the := operator similar to pascal.
+
+If an identifier has not been assigned a value, it evaluates to itself:
+x2;
+x2
+
+but
+
+x2: = a + b:
+x2;
+a + b
+
+To clear an identifier:
+
+delete(x)
+
+To save there are two steps:
+
+Step 1: Set your WRITEPATH variable
+  WRITEPATH: = "C:\\MuPAD";
+Note the double \\
+
+Step 2: Use the protocol command
+  protocol("ex.1");
+
 
