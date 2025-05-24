@@ -82,5 +82,46 @@ DOM_INT
 
 A string is anything closed in " "
 
+a: = "I am a string": domtype(a);
 DOM_STRING
+
+Identifiers can be TRUE or FALSE if a boolean:
 DOM_BOOL
+
+A list is an ordered sequence in square brackets of any number of expressions of different types:
+x: = [2.0, I,7, x^2]: domtype(x);
+DOM_LIST
+
+Indexing of a list starts at 1:
+x[1]; x[3];
+2.0
+7
+
+Elements can be removed from a list and new elements can be inserted. Details are given in help.
+
+A set is a collection of different elements in curly brackets. Unlke a list, there isno concept of the order of the elements, and repeats are not possible:
+
+a: = {1,2, x^2, x^3, 2, x^2}; domtype(a);
+{1,2, x^2, x^3}
+DOM_SET
+
+The usual binary operators union, intersect, and minus are defined for sets e.g.:
+
+a: = {1, 2, x}: b: = {1,2, x^2}:
+a union b;
+{1, 2, x, x^2}
+
+The function contains() checks if an element is a memer of a set. Details in online help. Fuck me ig.
+
+The type most often used in MuPAD is DOM_EXPR e.g.:
+
+y: = 1 + x^2: domtype(y);
+DOM_EXPR
+
+Other types
+
+DOM_ARRAY
+DOM_TABLE
+DOM_PROC
+DOM_POLY
+
