@@ -170,3 +170,72 @@ Fuck im good.
 
 Another notation for D is ` , but will not be using.
 
+Integration:
+Can use MuPAD to calculate the integral of an expression, either in the indefinite sense of an anti-derivative, or
+as a definite integral between limits. A limit of infinity (+ or -) is acceptable.
+
+Syntax:
+f1:=1/(x*ln(x));
+1
+-------
+x ln(x)
+>> int(f1,x);
+ln(ln(x))
+>> int(f1,x=E..E^2);
+ln(2)
+
+REMINDER ALL CAPS IDENTITIES FUCKIT E=eulers number I=sqrt(-1) DO NOT USE e or i
+
+Continous stuff, use paramater only when u know if the integral is cont
+
+int(x/(x-a)^4,x);
+a x
+- - -
+6 2
+-------------------------
+3 3 2 2
+x - a - 3 a x + 3 a x
+>> factor(%);
+(-1/6) (- a + 3 x)
+------------------
+3
+(- a + x)
+>> int(x/(x-a)^4,x=2..infinity);
+Warning: Found potential discontinuities of the antiderivative.
+Try option 'Continuous' or use properties (?assume).
+[intlib::antiderivati\
+ve]
+/ x \
+int| --------, x = 2..infinity |
+| 4 |
+\ (x - a) /
+>> int(x/(x-a)^4,x=2..infinity,Continuous);
+a
+- - 1
+6
+- --------------------
+2 3
+6 a - 12 a - a + 8
+
+MuPAD can also find a numerical approxumation to a definite integral, provided the integral does not contain any unkowns.
+
+i1:=int(sin(x)^2*cos(x)^2,x=PI..3*PI);
+PI
+--
+4
+>> float(i1);
+0.7853981634
+>> i2:=int(sin(x^2*exp(x^(1/3))),x=0..1);
+2 1/3
+int(sin(x exp(x )), x = 0..1)
+>> float(i2);
+0.4888639092
+>> i3:=int(a*sin(x^2*exp(x^(1/3))),x=0..1);
+2 1/3
+int(a sin(x exp(x )), x = 0..1)
+>> float(i3);
+2 1/3
+int(a sin(x exp(x )), x = 0..1)
+
+i3 cannot be evaluated numerically because it has an unkown a
+
