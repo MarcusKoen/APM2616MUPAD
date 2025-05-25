@@ -1,1 +1,372 @@
+Linear algebra in MuPAD:
 
+Data types: The data types usin in linear algebra are:
+table
+array
+matrix
+
+Table structure is by far the most flexible way for storing, and then later accessing indexed data. A table can be constructed either explicitly or implicitly:
+
+>> T := table(a = 13, c = 42);
+table(
+c = 42,
+a = 13
+)
+>> T[a], T[b], T[c];
+13, T[b], 42
+>> delete T: T[4] := 7: T;
+table(
+4 = 7
+)
+>> T1[(1,2)]:=a^2;
+2
+a
+>> T1;
+table(
+2
+(1, 2) = a
+)
+
+Once created the elements of a table can be assigned new values. The indices of a table can be anything, numbers, expression etc.
+Note that a table is a dynamic data structure, in that new elements can be added to a table at any time.
+
+The size of an array or a matrix is fixed when it is declared. An array is indexed by a list of integers, which can be negative, zero or positive;
+
+While a matrix is indexed by a list of positive integers.
+
+The command matrix can be used to transfom an array into a matrix.
+
+>> A := array(-1..1, [2, sin(x), FAIL]);
++- -+
+| 2, sin(x), FAIL |
++- -+
+>> A[-1], A[2];
+>> A[-1];
+2
+>> A[2];
+Error: Illegal argument [array]
+>> A := array(0..2, 1..2, (1, 2) = 42, (2, 1) = 1 + I);
++- -+
+| ?[0, 1], ?[0, 2] |
+| |
+| ?[1, 1], 42 |
+| |
+| 1 + I, ?[2, 2] |
++- -+
+>> A:=array(0..1,-1..1, [[1, 2, 3], [4, 5, 6]]);
++- -+
+| 1, 2, 3 |
+| |
+| 4, 5, 6 |
++- -+
+>> array(2..3, 1..3, 1..1,
+[
+[ [1], [2], [3] ],
+[ [4], [5], [6] ]
+]);
+array(2..3, 1..3, 1..1,
+(2, 1, 1) = 1,
+(2, 2, 1) = 2,
+(2, 3, 1) = 3,
+(3, 1, 1) = 4,
+(3, 2, 1) = 5,
+(3, 3, 1) = 6
+)
+>> A := matrix([[1, 5], [2, 3]]);
++- -+
+| 1, 5 |
+| |
+| 2, 3 |
++- -+
+669
+>> matrix(4, 4, [[1, 2], [2]]);
++- -+
+| 1, 2, 0, 0 |
+| |
+| 2, 0, 0, 0 |
+| |
+| 0, 0, 0, 0 |
+| |
+| 0, 0, 0, 0 |
++- -+
+>> a := array(1..3, 2..4,
+[[1, 1/3, 0], [-2, 3/5, 1/2], [-3/2, 0, -1]]
+);
++- -+
+| 1, 1/3, 0 |
+| |
+| -2, 3/5, 1/2 |
+| |
+| -3/2, 0, -1 |
++- -+
+>> A := matrix(a);
++- -+
+| 1, 1/3, 0 |
+| |
+| -2, 3/5, 1/2 |
+| |
+| -3/2, 0, -1 |
++- -+
+>> b := array(1..4): b[1] := 2: b[4] := 0: b;
++- -+
+| 2, ?[2], ?[3], 0 |
++- -+
+>> matrix(b);
+Error: unable to define matrix over Dom::ExpressionField()
+[(Dom::Matrix(D\
+om::ExpressionField()))::new]
+>> c:=array(0..1,0=a1,1=a2);
++- -+
+| a1, a2 |
++- -+
+6:
+>> C:=matrix(c);
++- -+
+| a1 |
+| |
+| a2 |
++- -+
+=========================================
+Syntax for a matrix:
+
+matrix(m,n,[[a11,a12...],[a21,a22...]] returns an nxm matrix
+
+matrix(3,3,[[1,0,0],[0,1,0],[0,0,1]])
+
+                               +-         -+
+                               |  1, 0, 0  |
+                               |           |
+                               |  0, 1, 0  |
+                               |           |
+                               |  0, 0, 1  |
+                               +-         -+
+
+array syntax:
+array(n..m)
+
+A := array(2..4)
+
+                           +-                -+
+                           | ?[2], ?[3], ?[4] |
+                           +-                -+
+
+A[2] := 3
+
+                                     3
+
+A
+
+                             +-             -+
+                             | 3, ?[3], ?[4] |
+                             +-             -+
+
+A[4] := "MuPAD"
+
+                                  "MuPAD"
+
+A
+
+                           +-                -+
+                           | 3, ?[3], "MuPAD" |
+                           +-                -+
+
+The question mark means the value has not been initialized
+
+Note te following differences between arrays and matrices:
+The indices of an array can be 0 or negative, but those of a matrix are between 1 and an upper limit
+An array can have any number of dimensions, but a matriix always has 2 indices
+An array can have uninitialized entries, but a matrix cannot, in a matrix the default value of an entry is 0
+
+If you want to apply the same function to every element of a table, array or matrix use the map command.
+T_VATexcluded := table(1 = 65, 2 = 28, 3 = 42):
+>> T_VATincluded:=map(T_VATexcluded, _mult, 1.14);
+table(
+3 = 47.88,
+2 = 31.92,
+1 = 74.1
+)
+
+:=x->x+sin(x);
+x -> x + sin(x)
+>> A:=matrix([[y,z],[0,PI]]);
+      +- -+
+      | y, z |
+      | |
+      | 0, PI |
+      +- -+
+
+B:=map(A,f);
++- -+
+| y + sin(y), z + sin(z) |
+| |
+| 0, PI |
++- -+
+
+Packages
+
+MuPAD contains a number of packages, also called libraries, which are collections of routines relevant to a particular topic. 
+In this study unit we will be primarily concerned with the linear algebra package, but we start with some remarks about packages in general.
+Information about all available packages can be obtained by using the info command.
+info() produces a list of all available packages, and info(package-name) gives a list of all routines in package.
+
+info(transform);
+Library 'transform': library for integral transformations
+-- Interface:
+transform::fourier, transform::invfourier, transform::invlaplace,
+transform::laplace
+
+The general usages of a package routine can be tedious, because it has to be called by using the syntax:
+package-name::routine-name
+This can be avoided by using the export command, usually in the form export(L), which makes all routines in the package L available without the prefix L::
+The effect of exporting L is cancelled by the command unexport(L)
+
+The linear algebra package linalg
+linalg only defined for matrix datatype.
+
+export(linalg);
+>> A:=matrix([[1,2,0],[2,3,0],[0,4,a]]);
++- -+
+ | 1, 2, 0 |
+| |
+| 2, 3, 0 |
+| |
+| 0, 4, a |
++- -+
+>> d:=det(A);
+-a
+>> 1/A;
++- -+
+| -3, 2, 0 |
+| |
+| 2, -1, 0 |
+| |
+| 8 4 1 |
+| - -, -, - |
+| a a a |
++- -+
+>> eigenvalues(A);
+1/2 1/2
+{a, 5 + 2, 2 - 5 }
+>> factorLU(A);
+-- +- -+ +- -+ --
+| | 1, 0, 0 | | 1, 2, 0 | |
+| | | | | |
+| | 2, 1, 0 |, | 0, -1, 0 |, [1, 2, 3] |
+| | | | | |
+| | 0, -4, 1 | | 0, 0, a | |
+-- +- -+ +- -+ --
+>> isPosDef(A);
+FALSE
+
+A := matrix(3,3,[[1,0,0],[0,1,0],[0,0,1]])
+
+                               +-         -+
+                               |  1, 0, 0  |
+                               |           |
+                               |  0, 1, 0  |
+                               |           |
+                               |  0, 0, 1  |
+                               +-         -+
+
+export(linalg)
+
+
+det(A)
+
+                                     1
+
+The linalg package also containes routines connected with calculus in higher dimensions. These routines can be used to computer the grad of a scalar field,
+as well as the curl and div of a vector field, in a variety of orthogonal systems(cartesian, cylindrical, spherical etc.)
+The Laplacian operatior is not directly available, but is easy to constuct as the divergence of the gradient.
+Further details see grad curl divergense ogCoordTab - linalg package
+
+f:=r^2*3*sin(2*theta)*sin(phi);
+2
+3 r sin(phi) sin(2 theta)
+>> f1:=grad(f,[r,theta,phi],Spherical);
++- -+
+| 6 r sin(phi) sin(2 theta) |
+| |
+| 6 r sin(phi) cos(2 theta) |
+| |
+| 3 r cos(phi) sin(2 theta) |
+| ------------------------- |
+| sin(theta) |
++- -+
+>> Lf:=divergence(f1,[r,theta,phi],Spherical): Lf:=simplify(Lf);
+0
+>> f:=matrix([y*z,x*z,x^2]);
++- -+
+| y z |
+| |
+| x z |
+| |
+| 2 |
+| x |
++- -+
+>> curl(f,[x,y,z],Cartesian);
++- -+
+| -x |
+| |
+| - 2 x + y |
+| |
+| 0 |
++- -+
+
+Matrices over a specified algebraic structure
+In general, the elements of a matrix are of type exressio, but it is possible to give a more precise specification fo the type of matrix.
+The elements of a matrix can be specified to be e.g. rational, real, integer, complex, or integer mod n.
+This specification witll then also apply to any matrices that are derived from the orginal matrix, so that if a matrix is of type integer
+and the inverse would involve rational numbers, the the inverse result would be FAIL.
+
+First we define two constructors, MatI7 and MatQ, which defines matrices over the integers mod 7 and rational numbers respectively.
+We then use these constructors to initialize the matrices, using the same syntax as was used abve for the constructor matrix,
+
+MatQ := Dom::Matrix(Dom::Rational);
+Dom::Matrix(Dom::Rational)
+>>MatI7:= Dom::Matrix(Dom::IntegerMod(7));
+Dom::Matrix(Dom::IntegerMod(7))
+>> AQ:=MatQ([[1,2],[3,4]]);
++- -+
+| 1, 2 |
+| |
+| 3, 4 |
++- -+
+>> AI:=MatI7([[1,2],[3,4]]);
++- -+
+| 1 mod 7, 2 mod 7 |
+| |
+| 3 mod 7, 4 mod 7 |
++- -+
+>> AI^2;
++- -+
+| 0 mod 7, 3 mod 7 |
+| |
+| 1 mod 7, 1 mod 7 |
++- -+
+>> AQ^2;
++- -+
+| 7, 10 |
+| |
+| 15, 22 |
++- -+
+>> 1/AQ;
++- -+
+| -2, 1 |
+| |
+| 3/2, -1/2 |
++- -+
+>> 1/AI;
++- -+
+| 5 mod 7, 1 mod 7 |
+| |
+| 5 mod 7, 3 mod 7 |
++- -+
+676
+>> eigenvalues(AQ);
+{}
+>> eigenvalues(AI);
+{}
+>> charpoly(AQ,x);
+2
+x - 5 x - 2
