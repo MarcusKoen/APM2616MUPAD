@@ -1,1 +1,188 @@
+Procedures in MuPAD
 
+Basic syntax:
+
+use the command proc
+>> f:=proc(x)
+begin
+return (x+sin(x^2))
+end_proc;
+proc f(x) ... end
+>> g:=x->x+sin(x^2);
+x -> x + sin(x^2)
+>> f(a)-g(a);
+0
+
+New commands:
+proc, begin, return, endproc
+
+>> delta:=proc(n)
+begin
+m:=matrix(n,n);
+for i from 1 to n do m[i,i]:=1 end_for;
+return(m)
+end_proc;
+proc delta(n) ... end
+7
+>> I3:=delta(3);
++- -+
+| 1, 0, 0 |
+| |
+| 0, 1, 0 |
+| |
+| 0, 0, 1 |
++- -+
+
+Local and global variables:
+Unless declared, variables are global.
+
+However at the start of a procedure , varaibles can be declared local, and if there is a global variable with the same name, procedure does not affect.
+Variables passed to the procedure, i.e. the list of variables in brackets after proc, are automatically local.
+
+>> delta:=proc(n)
+local m, i;
+begin
+m:=matrix(n,n);
+for i from 1 to n do m[i,i]:=1 end_for;
+return(m)
+end_proc;
+proc delta(n) ... end
+>> I2:=delta(2);
++- -+
+| 1, 0 |
+| |
+| 0, 1 |
++- -+
+>> m;
+m
+
+It is also possible to define a procedure as local within another procedure, e.g.:
+
+>> f:=proc(x)
+local g;
+begin
+g:=y->y^2;
+return(g(x))
+end_proc;
+proc f(x) ... end
+>> f(a);
+2
+a
+>> g(z);
+g(z)
+
+The function g is not recognized in the main MuPAD session, i.e, it is not recognized outside f.
+
+There is one case where global variables cannot be avoided, because MuPAD does not permit a local variable to be used as an 
+arbitrary variable such as the variable of integration.
+
+We can still achievve the effect of a local variable in the following way:
+
+>> f := proc(n)
+save x;
+begin
+delete x;
+int(x^n*exp(-x), x = 0..1)
+end_proc:
+>> x := 3: f(1), f(2), f(3);
+1 - 2 exp(-1), 2 - 5 exp(-1), 6 - 16 exp(-1)
+>> x;
+3
+
+Output from a procedure
+Normally output to the screen is suppressed from within a procedure, If you want output to the screen
+during the execution of a procedure, this has to be instructed explicitly by using the print command e.g.:
+
+f:=proc(x)
+begin
+print(Unquoted,"started");
+return(x^2)
+end_proc;
+proc f(x) ... end
+>> f(b^3);
+started
+6
+b
+
+Why print during a procedure? - Debugging
+
+The input variables to a procedure:
+May be restricted to a specified type, by means of the syntax proc(a:Type,..). 
+This construct can be very useful in error avoidance. In the matrix delta procedure, ensure positive integer.
+
+delta:=proc(n:Type::PosInt)
+local m, i;
+begin
+m:=matrix(n,n);
+for i from 1 to n do m[i,i]:=1 end_for;
+return(m)
+end_proc;
+proc delta(n) ... end
+>> delta(2);
++- -+
+| 1, 0 |
+| |
+| 0, 1 |
++- -+
+>> delta(0);
+Error: Wrong type of 1. argument (type 'Type::PosInt' expected,
+got argument '0');
+during evaluation of 'delta'
+
+Library type check ?Type
+
+There are some procedures in which the number of arguments passed to the procedure is not fixed for each call of the procedure.
+Note that it is not necessary for any arguments to be passed, but the brackets () must appear in both the definition and call of the procedure.
+
+hello := proc()
+begin
+print("Hello World");
+return()
+end_proc
+
+                           proc hello() ... end
+
+hello()
+
+                               "Hello World"
+see args in help
+
+f := proc() begin
+print(Unquoted, "number of arguments" = args(0)):
+print(Unquoted, "sequence of all arguments" = args()):
+if args(0) > 0 then
+print(Unquoted, "first argument" = args(1)):
+end_if:
+if args(0) >= 3 then
+print(Unquoted, "second, third argument" = args(2..3)):
+end_if:
+end_proc:
+>> f():
+number of arguments = 0
+sequence of all arguments = null()
+>> f(a, b, c, d):
+number of arguments = 4
+sequence of all arguments = (a, b, c, d)
+first argument = a
+second, third argument = (b, c)
+
+Evaluation within a procedure is recursive
+>>p1:=proc(x,y,z)
+begin
+x:=y+z: y:=2: x:
+return(x)
+end_proc;
+proc p1(x, y, z) ... end
+>> p1(a,b,c); b + c
+>> delete a,b,c;
+>> a:=b+c: b:=2: a:
+>> a; c + 2
+
+Reverse the order insied the procedure, so that the value of y is known before x is evaluated
+>> p1:=proc(x,y,z)
+begin
+y:=2: x:=y+z: x:
+return(x)
+end_proc; proc p1(x, y, z) ... end
+>> delete a,b,c;
+>> p1(a,b,c); c + 2
