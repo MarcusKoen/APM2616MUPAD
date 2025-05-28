@@ -84,7 +84,8 @@ To research commands: fclose, fopen, fread, fprint, ftextinput
 NB, a bit of a tangent, but how to access the Help Facility.
   Help->Browse Manual->Search->Display
 
-Types.
+Types:
+=============
 MuPAD type allocation is done implicityly and the type of a variable can change during the session.
 
 Until an identifier is set, it is a type identifier of type DOM_IDENT.
