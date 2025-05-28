@@ -5,3 +5,15 @@
 ifactor(133)
 
                                    7 19
+10.)
+A:="Hello";
+
+                                  "Hello"
+
+B:=" world!"
+
+                                 " world!"
+
+C:= A.B
+
+                              "Hello world!"
